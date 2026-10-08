@@ -1,0 +1,71 @@
+name: CI
+
+on:
+  push:
+    branches: ["main", "develop"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  lint-and-test:
+    name: Lint & Test (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        python-version: ["3.12"]
+
+    steps:
+      # ------------------------------------------------------------------ #
+      # 1. Checkout & Python setup
+      # ------------------------------------------------------------------ #
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: "pip"
+
+      # ------------------------------------------------------------------ #
+      # 2. Install dependencies
+      # ------------------------------------------------------------------ #
+      - name: Install runtime dependencies
+        run: pip install -r requirements.txt
+
+      - name: Install dev tools (lint + test)
+        run: pip install flake8 pytest pytest-cov
+
+      # ------------------------------------------------------------------ #
+      # 3. Code style — Flake8 (PEP 8)
+      # ------------------------------------------------------------------ #
+      - name: Lint with Flake8
+        run: |
+          flake8 src/ tests/ \
+            --max-line-length=100 \
+            --extend-ignore=E203,W503 \
+            --exclude=__pycache__,.venv
+
+      # ------------------------------------------------------------------ #
+      # 4. Unit tests — pytest
+      # ------------------------------------------------------------------ #
+      - name: Run unit tests with coverage
+        run: |
+          pytest tests/ -v --tb=short \
+            --cov=src/recidivism \
+            --cov-report=term-missing \
+            --cov-fail-under=60
+
+      # ------------------------------------------------------------------ #
+      # 5. Model & data schema gate
+      # ------------------------------------------------------------------ #
+      - name: Verify package imports cleanly
+        run: |
+          python -c "
+          import sys; sys.path.insert(0, 'src')
+          from recidivism.metrics import classification_metrics
+          from recidivism.hybrid import HybridSurvivalNet, MLPNet
+          from recidivism.baselines import get_baselines
+          print('All imports OK')
+          "
