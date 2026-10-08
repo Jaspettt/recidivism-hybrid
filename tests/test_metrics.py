@@ -11,8 +11,10 @@ import pytest
 from recidivism.metrics import (
     expected_calibration_error,
     classification_metrics,
+    full_report,
     group_fairness_table,
     fairness_gaps,
+    per_year_auc,
 )
 
 
@@ -118,3 +120,39 @@ def test_fairness_gaps_same_group():
     table = group_fairness_table(y_true, y_prob, group)
     gaps = fairness_gaps(table)
     assert gaps["equalized_odds_diff"] < 0.5  # loose bound for random data
+
+
+# ---------------------------------------------------------------------------
+# per_year_auc & full_report
+# ---------------------------------------------------------------------------
+
+def test_per_year_auc_keys():
+    n, t = 40, 3
+    hazards = RNG.uniform(0.1, 0.9, size=(n, t))
+    y_years = np.zeros((n, t), dtype=float)
+    for i in range(n):
+        year = int(RNG.integers(0, t + 1))
+        if year < t:
+            y_years[i, year] = 1.0
+    # ensure year-1 has both classes among at-risk
+    y_years[0, 0], y_years[1, 0] = 1.0, 0.0
+    out = per_year_auc(hazards, y_years)
+    assert set(out) == {"auc_year1", "auc_year2", "auc_year3"}
+    for v in out.values():
+        assert 0.0 <= v <= 1.0
+
+
+def test_full_report_with_sensitive(binary_data, group_series):
+    y_true, y_prob = binary_data
+    sensitive = pd.DataFrame({"grp": group_series})
+    report = full_report(y_true, y_prob, sensitive=sensitive)
+    assert "overall" in report
+    assert "by_grp" in report
+    assert "gaps_grp" in report
+    assert "roc_auc" in report["overall"]
+
+
+def test_full_report_without_sensitive(binary_data):
+    y_true, y_prob = binary_data
+    report = full_report(y_true, y_prob, sensitive=None)
+    assert set(report) == {"overall"}
