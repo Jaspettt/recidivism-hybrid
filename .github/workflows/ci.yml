@@ -66,6 +66,6 @@ jobs:
           import sys; sys.path.insert(0, 'src')
           from recidivism.metrics import classification_metrics
           from recidivism.hybrid import HybridSurvivalNet, MLPNet
-          from recidivism.baselines import get_baselines
+          from recidivism.baselines import make_baselines
           print('All imports OK')
           "

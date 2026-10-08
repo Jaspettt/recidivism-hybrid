@@ -2,13 +2,11 @@
 
 Research codebase for the master's dissertation:
 
-> **«Development of a Hybrid Neural Network Algorithm for Predicting the Risk of Recidivism in the Criminal Sphere»**
-> Viktor Kossinov · Astana IT University · 2025–2027
-> Supervisor: Dr. A. K. Zhumadillayeva
+> **«Development of a Hybrid Neural Network Algorithm for Predicting the Risk of Recidivism in the Criminal Sphere»** Viktor Kossinov · Astana IT University · 2025–2027 Supervisor: A. K. Zhumadillayeva
 
-[![CI](https://github.com/vkossinov/recidivism-hybrid/actions/workflows/ci.yml/badge.svg)](https://github.com/vkossinov/recidivism-hybrid/actions/workflows/ci.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/)
+![CI](https://github.com/vkossinov/recidivism-hybrid/actions/workflows/ci.yml/badge.svg)
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
+![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)
 
 ---
 
@@ -47,6 +45,11 @@ notebooks/
 tests/
   test_metrics.py     # Unit tests for metrics module
   test_hybrid.py      # Unit tests for model architecture
+  test_baselines.py   # Baseline model factory
+  test_data.py        # NIJ / COMPAS preprocessing (synthetic)
+  test_train.py       # MLP / hybrid training loops
+  test_fairness.py    # Equalized-odds post-processing
+  test_explain.py     # SHAP / permutation importance
 results/              # Metrics CSVs, figures (generated — not committed)
 data/raw/             # Raw datasets (not committed — see Data section)
 ```
@@ -55,10 +58,10 @@ data/raw/             # Raw datasets (not committed — see Data section)
 
 ## Data
 
-| Dataset | Source | Records | Notes |
-|---|---|---|---|
-| NIJ Recidivism Challenge | [data.ojp.usdoj.gov](https://data.ojp.usdoj.gov/Courts/NIJ-s-Recidivism-Challenge-Full-Dataset/ynf5-u8nk) | 25,835 | Primary — place at `data/raw/nij_recidivism_full.csv` |
-| COMPAS (ProPublica) | [GitHub](https://github.com/propublica/compas-analysis) | 6,172 | Fairness validation — place at `data/raw/compas-scores-two-years.csv` |
+| Dataset                  | Source                                                                                                    | Records | Notes                                                                 |
+| ------------------------ | --------------------------------------------------------------------------------------------------------- | ------- | --------------------------------------------------------------------- |
+| NIJ Recidivism Challenge | [data.ojp.usdoj.gov](https://data.ojp.usdoj.gov/Courts/NIJ-s-Recidivism-Challenge-Full-Dataset/ynf5-u8nk) | 25,835  | Primary — place at `data/raw/nij_recidivism_full.csv`                 |
+| COMPAS (ProPublica)      | [GitHub](https://github.com/propublica/compas-analysis)                                                   | 6,172   | Fairness validation — place at `data/raw/compas-scores-two-years.csv` |
 
 Raw data files are **not committed** (`.gitignore`) due to size and redistribution constraints.
 
@@ -100,14 +103,14 @@ A GitHub Actions workflow (`.github/workflows/ci.yml`) runs automatically on eve
 
 ## Key Results
 
-| Model | AUC | F1 | Brier | ECE |
-|---|---|---|---|---|
+| Model                           | AUC       | F1        | Brier     | ECE       |
+| ------------------------------- | --------- | --------- | --------- | --------- |
 | **Ensemble (hybrid + XGBoost)** | **0.820** | **0.795** | **0.168** | **0.016** |
-| XGBoost | 0.820 | 0.791 | 0.169 | 0.020 |
-| HybridSurvivalNet (ours) | 0.808 | 0.791 | 0.174 | 0.029 |
-| Random Forest | 0.805 | 0.791 | 0.178 | 0.052 |
-| MLP | 0.803 | 0.781 | 0.177 | 0.021 |
-| Logistic Regression | 0.790 | 0.778 | 0.181 | 0.015 |
+| XGBoost                         | 0.820     | 0.791     | 0.169     | 0.020     |
+| HybridSurvivalNet (ours)        | 0.808     | 0.791     | 0.174     | 0.029     |
+| Random Forest                   | 0.805     | 0.791     | 0.178     | 0.052     |
+| MLP                             | 0.803     | 0.781     | 0.177     | 0.021     |
+| Logistic Regression             | 0.790     | 0.778     | 0.181     | 0.015     |
 
 **Ablation:** MLP 0.803 → +survival head 0.805 → +two branches 0.807 → +gated fusion 0.808
 
@@ -117,31 +120,18 @@ A GitHub Actions workflow (`.github/workflows/ci.yml`) runs automatically on eve
 
 ## Technology Stack
 
-| Component | Technology | Justification |
-|---|---|---|
-| Language | Python 3.12 | Ecosystem standard for ML/AI |
-| Deep learning | PyTorch 2.4 | Dynamic graphs, GRU support, GPU |
-| Gradient boosting | XGBoost 2.1 | State-of-the-art tabular baseline |
-| Explainability | SHAP 0.46 | TreeSHAP + permutation importance |
-| Fairness | fairlearn 0.11 | ThresholdOptimizer (equalized odds) |
-| VCS | Git + GitHub | Distributed versioning, CI/CD |
-| Testing | pytest + flake8 | Automated quality gates |
+| Component         | Technology      | Justification                       |
+| ----------------- | --------------- | ----------------------------------- |
+| Language          | Python 3.12     | Ecosystem standard for ML/AI        |
+| Deep learning     | PyTorch 2.4     | Dynamic graphs, GRU support, GPU    |
+| Gradient boosting | XGBoost 2.1     | State-of-the-art tabular baseline   |
+| Explainability    | SHAP 0.46       | TreeSHAP + permutation importance   |
+| Fairness          | fairlearn 0.11  | ThresholdOptimizer (equalized odds) |
+| VCS               | Git + GitHub    | Distributed versioning, CI/CD       |
+| Testing           | pytest + flake8 | Automated quality gates             |
 
 ---
 
 ## License
 
 MIT — see [LICENSE](LICENSE).
-
----
-
-## Citation
-
-If you use this code, please cite:
-
-```
-Kossinov, V., & Zhumadillayeva, A. K. (2026).
-Application of Hybrid Neural Network Architectures for Predicting Recidivism
-with Explainable Outcomes. [Manuscript in preparation].
-Astana IT University.
-```
