@@ -28,7 +28,9 @@ def expected_calibration_error(y_true: np.ndarray, y_prob: np.ndarray, n_bins: i
     return float(ece)
 
 
-def classification_metrics(y_true: np.ndarray, y_prob: np.ndarray, threshold: float = 0.5) -> dict[str, float]:
+def classification_metrics(
+    y_true: np.ndarray, y_prob: np.ndarray, threshold: float = 0.5
+) -> dict[str, float]:
     """The metric set fixed in the individual work plan: AUC, F1, calibration."""
     y_pred = (y_prob >= threshold).astype(int)
     return {

@@ -8,7 +8,6 @@ into an sklearn-compatible estimator so that fairlearn's ``ThresholdOptimizer``
 from __future__ import annotations
 
 import numpy as np
-import pandas as pd
 from fairlearn.postprocessing import ThresholdOptimizer
 from sklearn.base import BaseEstimator, ClassifierMixin
 

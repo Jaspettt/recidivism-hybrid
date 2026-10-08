@@ -44,7 +44,11 @@ def permutation_importance(
             X_perm = X.copy()
             X_perm[col] = rng.permutation(X_perm[col].to_numpy())
             drops.append(base_auc - roc_auc_score(y, predict_proba_1d(X_perm)))
-        rows.append({"feature": col, "auc_drop_mean": np.mean(drops), "auc_drop_std": np.std(drops)})
+        rows.append({
+            "feature": col,
+            "auc_drop_mean": np.mean(drops),
+            "auc_drop_std": np.std(drops),
+        })
 
     return (
         pd.DataFrame(rows)

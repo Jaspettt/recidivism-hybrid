@@ -5,11 +5,7 @@ and ablation switches (no gate, single branch).
 No real dataset is required — all inputs are synthetic tensors.
 """
 
-import pytest
 import torch
-import sys, os
-
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 from recidivism.hybrid import (
     MLPNet,
@@ -114,15 +110,14 @@ def test_survival_loss_decreases():
 
     model.train()
     logits = model(x_s, x_d)
-    loss_before = survival_loss(logits, y).item()
+    loss = survival_loss(logits, y)
     opt.zero_grad()
-    survival_loss(logits, y).backward()
+    loss.backward()
     opt.step()
 
     logits2 = model(x_s, x_d)
-    loss_after = survival_loss(logits2, y).item()
-    # At least one of the two losses should be finite
-    assert not (torch.isnan(torch.tensor(loss_after)))
+    loss_after = survival_loss(logits2, y)
+    assert not torch.isnan(loss_after)
 
 
 # ---------------------------------------------------------------------------

@@ -72,17 +72,26 @@ class HybridSurvivalNet(nn.Module):
     ):
         super().__init__()
         self.static_branch = _mlp(static_dim, static_hidden, dropout)
-        self.dynamic_branch = _mlp(dynamic_dim, dynamic_hidden, dropout) if dynamic_dim > 0 else None
+        self.dynamic_branch = (
+            _mlp(dynamic_dim, dynamic_hidden, dropout) if dynamic_dim > 0 else None
+        )
 
         concat_dim = static_hidden[-1] + (dynamic_hidden[-1] if dynamic_dim > 0 else 0)
-        self.gate = nn.Sequential(nn.Linear(concat_dim, concat_dim), nn.Sigmoid()) if use_gate else None
-        self.fuse = nn.Sequential(nn.Linear(concat_dim, fused_dim), nn.ReLU(), nn.Dropout(dropout))
+        self.gate = (
+            nn.Sequential(nn.Linear(concat_dim, concat_dim), nn.Sigmoid())
+            if use_gate else None
+        )
+        self.fuse = nn.Sequential(
+            nn.Linear(concat_dim, fused_dim), nn.ReLU(), nn.Dropout(dropout)
+        )
 
         self.year_emb = nn.Embedding(N_YEARS, fused_dim)
         self.gru = nn.GRU(fused_dim, fused_dim, batch_first=True)
         self.hazard_head = nn.Linear(fused_dim, 1)
 
-    def forward(self, x_static: torch.Tensor, x_dynamic: torch.Tensor | None = None) -> torch.Tensor:
+    def forward(
+        self, x_static: torch.Tensor, x_dynamic: torch.Tensor | None = None
+    ) -> torch.Tensor:
         """Returns hazard logits of shape ``(batch, 3)``."""
         z = self.static_branch(x_static)
         if self.dynamic_branch is not None:

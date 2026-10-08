@@ -7,9 +7,6 @@ Run with:  pytest tests/
 import numpy as np
 import pandas as pd
 import pytest
-import sys, os
-
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "src"))
 
 from recidivism.metrics import (
     expected_calibration_error,
@@ -25,6 +22,7 @@ from recidivism.metrics import (
 
 RNG = np.random.default_rng(42)
 N = 200
+
 
 @pytest.fixture
 def binary_data():

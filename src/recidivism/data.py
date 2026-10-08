@@ -92,7 +92,8 @@ def _to_binary(series: pd.Series) -> pd.Series:
 
 def _is_boolean_like(series: pd.Series) -> bool:
     vals = set(series.dropna().unique().tolist())
-    return len(vals) > 0 and vals <= {True, False, "TRUE", "FALSE", "True", "False", "true", "false"}
+    bool_vals = {True, False, "TRUE", "FALSE", "True", "False", "true", "false"}
+    return len(vals) > 0 and vals <= bool_vals
 
 
 @dataclass
@@ -115,7 +116,9 @@ def load_nij_raw(path: str | Path = "data/raw/nij_recidivism_full.csv") -> pd.Da
     return pd.read_csv(path)
 
 
-def preprocess_nij(df: pd.DataFrame, include_sensitive: bool = False) -> tuple[pd.DataFrame, pd.DataFrame]:
+def preprocess_nij(
+    df: pd.DataFrame, include_sensitive: bool = False
+) -> tuple[pd.DataFrame, pd.DataFrame]:
     """Transform the raw NIJ table into a numeric feature matrix.
 
     Returns ``(X, meta)`` where ``meta`` keeps targets, the official split flag
