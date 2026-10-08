@@ -1,0 +1,219 @@
+{
+  "best_hybrid_config": {
+    "static_hidden": "(256, 128)",
+    "dynamic_hidden": "(96, 48)",
+    "fused_dim": "128",
+    "dropout": "0.3",
+    "lr": "0.0005"
+  },
+  "best_hybrid_val_auc": 0.8032248375477158,
+  "metrics": {
+    "ensemble_hybrid_xgb": {
+      "roc_auc": 0.8201,
+      "f1": 0.7946,
+      "accuracy": 0.7484,
+      "precision": 0.7479,
+      "recall": 0.8476,
+      "brier": 0.1683,
+      "ece": 0.0163
+    },
+    "xgboost": {
+      "roc_auc": 0.8196,
+      "f1": 0.7913,
+      "accuracy": 0.7491,
+      "precision": 0.7573,
+      "recall": 0.8285,
+      "brier": 0.1688,
+      "ece": 0.0202
+    },
+    "hybrid_survival": {
+      "roc_auc": 0.8077,
+      "f1": 0.7914,
+      "accuracy": 0.7413,
+      "precision": 0.7368,
+      "recall": 0.8548,
+      "brier": 0.1744,
+      "ece": 0.0287
+    },
+    "random_forest": {
+      "roc_auc": 0.8051,
+      "f1": 0.7911,
+      "accuracy": 0.7395,
+      "precision": 0.733,
+      "recall": 0.8592,
+      "brier": 0.178,
+      "ece": 0.0518
+    },
+    "mlp": {
+      "roc_auc": 0.8028,
+      "f1": 0.7814,
+      "accuracy": 0.7359,
+      "precision": 0.7445,
+      "recall": 0.8222,
+      "brier": 0.1766,
+      "ece": 0.0208
+    },
+    "logreg": {
+      "roc_auc": 0.7898,
+      "f1": 0.7784,
+      "accuracy": 0.7313,
+      "precision": 0.7392,
+      "recall": 0.822,
+      "brier": 0.1812,
+      "ece": 0.0151
+    }
+  },
+  "ablation": {
+    "mlp (BCE, single branch)": {
+      "roc_auc": 0.8028,
+      "f1": 0.7814,
+      "accuracy": 0.7359,
+      "precision": 0.7445,
+      "recall": 0.8222,
+      "brier": 0.1766,
+      "ece": 0.0208
+    },
+    "+ survival head": {
+      "roc_auc": 0.8051,
+      "f1": 0.7888,
+      "accuracy": 0.7395,
+      "precision": 0.7379,
+      "recall": 0.8472,
+      "brier": 0.1754,
+      "ece": 0.0265
+    },
+    "+ two branches (no gate)": {
+      "roc_auc": 0.8072,
+      "f1": 0.7877,
+      "accuracy": 0.7419,
+      "precision": 0.7463,
+      "recall": 0.834,
+      "brier": 0.1738,
+      "ece": 0.0134
+    },
+    "+ gated fusion (full hybrid)": {
+      "roc_auc": 0.8077,
+      "f1": 0.7914,
+      "accuracy": 0.7413,
+      "precision": 0.7368,
+      "recall": 0.8548,
+      "brier": 0.1744,
+      "ece": 0.0287
+    }
+  },
+  "per_year_auc": {
+    "auc_year1": 0.8300417023680763,
+    "auc_year2": 0.7411846778285134,
+    "auc_year3": 0.7022213292108415
+  },
+  "fairness_mitigation": [
+    {
+      "model": "xgboost",
+      "attribute": "Race",
+      "demographic_parity_diff_before": 0.0631,
+      "equalized_odds_diff_before": 0.0858,
+      "auc_gap_before": 0.0262,
+      "calibration_gap_before": 0.0005,
+      "demographic_parity_diff_after": 0.0278,
+      "equalized_odds_diff_after": 0.0439,
+      "auc_gap_after": 0.0214,
+      "calibration_gap_after": 0.017,
+      "accuracy_before": 0.7491,
+      "accuracy_after": 0.7445
+    },
+    {
+      "model": "xgboost",
+      "attribute": "Gender",
+      "demographic_parity_diff_before": 0.2238,
+      "equalized_odds_diff_before": 0.1645,
+      "auc_gap_before": 0.0072,
+      "calibration_gap_before": 0.0208,
+      "demographic_parity_diff_after": 0.1092,
+      "equalized_odds_diff_after": 0.0516,
+      "auc_gap_after": 0.0055,
+      "calibration_gap_after": 0.0017,
+      "accuracy_before": 0.7491,
+      "accuracy_after": 0.732
+    },
+    {
+      "model": "hybrid_survival",
+      "attribute": "Race",
+      "demographic_parity_diff_before": 0.0602,
+      "equalized_odds_diff_before": 0.0758,
+      "auc_gap_before": 0.0278,
+      "calibration_gap_before": 0.0183,
+      "demographic_parity_diff_after": 0.0224,
+      "equalized_odds_diff_after": 0.0287,
+      "auc_gap_after": 0.0124,
+      "calibration_gap_after": 0.0098,
+      "accuracy_before": 0.7413,
+      "accuracy_after": 0.7233
+    },
+    {
+      "model": "hybrid_survival",
+      "attribute": "Gender",
+      "demographic_parity_diff_before": 0.2336,
+      "equalized_odds_diff_before": 0.1935,
+      "auc_gap_before": 0.0148,
+      "calibration_gap_before": 0.006,
+      "demographic_parity_diff_after": 0.1141,
+      "equalized_odds_diff_after": 0.0642,
+      "auc_gap_after": 0.0088,
+      "calibration_gap_after": 0.0132,
+      "accuracy_before": 0.7413,
+      "accuracy_after": 0.7274
+    }
+  ],
+  "top10_hybrid_features": [
+    {
+      "feature": "Percent_Days_Employed",
+      "auc_drop_mean": 0.1316,
+      "auc_drop_std": 0.0027
+    },
+    {
+      "feature": "Jobs_Per_Year",
+      "auc_drop_mean": 0.0353,
+      "auc_drop_std": 0.0029
+    },
+    {
+      "feature": "Age_at_Release",
+      "auc_drop_mean": 0.0263,
+      "auc_drop_std": 0.0038
+    },
+    {
+      "feature": "Jobs_Per_Year__missing",
+      "auc_drop_mean": 0.0238,
+      "auc_drop_std": 0.0021
+    },
+    {
+      "feature": "Avg_Days_per_DrugTest__missing",
+      "auc_drop_mean": 0.0233,
+      "auc_drop_std": 0.0016
+    },
+    {
+      "feature": "Delinquency_Reports",
+      "auc_drop_mean": 0.0119,
+      "auc_drop_std": 0.0019
+    },
+    {
+      "feature": "Gang_Affiliated",
+      "auc_drop_mean": 0.0119,
+      "auc_drop_std": 0.0019
+    },
+    {
+      "feature": "Prior_Arrest_Episodes_Felony",
+      "auc_drop_mean": 0.0099,
+      "auc_drop_std": 0.0019
+    },
+    {
+      "feature": "Condition_MH_SA",
+      "auc_drop_mean": 0.0087,
+      "auc_drop_std": 0.0007
+    },
+    {
+      "feature": "Avg_Days_per_DrugTest",
+      "auc_drop_mean": 0.0062,
+      "auc_drop_std": 0.0011
+    }
+  ]
+}
