@@ -1,0 +1,24 @@
+name = "Recidivism Risk Prediction — Hybrid Neural Network"
+description = """
+Research software for predicting post-release recidivism risk.
+Accompanies the master's dissertation:
+  "Development of a Hybrid Neural Network Algorithm for Predicting
+   the Risk of Recidivism in the Criminal Sphere"
+  Viktor Kossinov, Astana IT University, 2025–2027
+"""
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.backends.legacy:build"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v --tb=short"
+
+[tool.flake8]
+max-line-length = 100
+extend-ignore = ["E203", "W503"]
+exclude = [".venv", "__pycache__", "*.ipynb"]
